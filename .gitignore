@@ -1,0 +1,23 @@
+# Python
+resumeforge/backend/.venv/
+resumeforge/backend/__pycache__/
+resumeforge/backend/*.pyc
+resumeforge/backend/*.yaml.tmp
+resumeforge/backend/*.json.tmp
+
+# Secrets & personal data
+resumeforge/backend/settings.json
+resumeforge/backend/resume_bank.yaml
+resumeforge/backend/active_resume.yaml
+resumeforge/backend/snapshots.json
+resumeforge/backend/photo.jpg
+
+# Node
+resumeforge/frontend/node_modules/
+resumeforge/frontend/dist/
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@page { size: A4; margin: 1.4cm 1.5cm 1.4cm 1.5cm; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; font-size: 9.5pt; line-height: 1.35; color: #000; }
+
+.header { display: flex; align-items: center; gap: 1.2cm; margin-bottom: 0.5cm; }
+.header-photo img { width: 2.8cm; height: 2.8cm; object-fit: cover;
+  object-position: center top; border-radius: 2px; }
+.header-photo img.circle { border-radius: 50%; }
+.header-info { flex: 1; }
+.header-info-no-photo { text-align: center; }
+.header-info h1 { font-size: 22pt; font-weight: bold; margin-bottom: 0.25cm; }
+.contact-grid { display: flex; flex-direction: column; gap: 2px; }
+.contact-grid div { font-size: 9pt; }
+.label { font-weight: bold; }
+
+.section { margin-bottom: 0.2cm; }
+.section-title { font-size: 10pt; font-weight: bold; text-transform: uppercase;
+  border-bottom: 1.5px solid #000; padding-bottom: 2px; margin-bottom: 0.2cm; }
+
+.entry { margin-bottom: 0.22cm; }
+.entry-header { display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 0.5cm; }
+.entry-left { flex: 1; }
+.entry-right { text-align: right; white-space: nowrap; flex-shrink: 0; }
+.entry-company { font-weight: bold; font-size: 9.5pt; }
+.entry-subtitle { font-style: italic; font-size: 9pt; }
+.entry-location { font-weight: bold; font-size: 9pt; }
+.entry-dates { font-size: 9pt; }
+
+ul.bullets { margin-top: 2px; margin-left: 0.4cm; padding-left: 0.3cm; }
+ul.bullets li { font-size: 9pt; margin-bottom: 1.5px; list-style-type: disc; }
+
+.summary-text { font-size: 9pt; line-height: 1.4; }
+.skills-block p { font-size: 9pt; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  {% if photo_exists %}
+  <div class="header-photo">
+    <img src="{{ photo_path }}" alt="Photo" class="{{ 'circle' if photo_shape == 'circle' else '' }}">
+  </div>
+  {% endif %}
+  <div class="header-info {% if not photo_exists %}header-info-no-photo{% endif %}">
+    <h1>{{ personal.name }}</h1>
+    <div class="contact-grid">
+      {% if personal.phone %}<div><span class="label">Mobile:</span> {{ personal.phone }}</div>{% endif %}
+      {% if personal.email %}<div><span class="label">E-mail:</span> {{ personal.email }}</div>{% endif %}
+      {% if personal.address %}<div><span class="label">Address:</span> {{ personal.address }}</div>{% endif %}
+      {% if personal.dob %}<div><span class="label">Date of birth:</span> {{ personal.dob }}</div>{% endif %}
+      {% if personal.linkedin %}<div><span class="label">LinkedIn:</span> {{ personal.linkedin }}</div>{% endif %}
+      {% if personal.extra %}{% for field in personal.extra %}{% if field.value %}<div><span class="label">{{ field.label }}:</span> {{ field.value }}</div>{% endif %}{% endfor %}{% endif %}
+    </div>
+  </div>
+</div>
+
+{% if summary %}
+<div class="section">
+  <h2 class="section-title">PROFESSIONAL SUMMARY</h2>
+  <p class="summary-text">{{ summary }}</p>
+</div>
+{% endif %}
+
+{% if work_experience %}
+<div class="section">
+  <h2 class="section-title">WORK EXPERIENCE</h2>
+  {% for job in work_experience %}
+  <div class="entry">
+    <div class="entry-header">
+      <div class="entry-left">
+        <div class="entry-company">{{ job.company }}</div>
+        <div class="entry-subtitle">{{ job.title }}</div>
+      </div>
+      <div class="entry-right">
+        <div class="entry-location">{{ job.location }}</div>
+        <div class="entry-dates">{{ job.dates }}</div>
+      </div>
+    </div>
+    <ul class="bullets">
+      {% for bullet in job.bullets %}<li>{{ bullet }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if education %}
+<div class="section">
+  <h2 class="section-title">EDUCATION</h2>
+  {% for edu in education %}
+  <div class="entry">
+    <div class="entry-header">
+      <div class="entry-left">
+        <div class="entry-company">{{ edu.institution }}</div>
+        <div class="entry-subtitle">{{ edu.degree }}</div>
+      </div>
+      <div class="entry-right">
+        <div class="entry-location">{{ edu.location }}</div>
+        <div class="entry-dates">{{ edu.dates }}</div>
+      </div>
+    </div>
+    {% if edu.bullets %}
+    <ul class="bullets">
+      {% for bullet in edu.bullets %}<li>{{ bullet }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if projects %}
+<div class="section">
+  <h2 class="section-title">PROJECTS</h2>
+  {% for project in projects %}
+  <div class="entry">
+    <div class="entry-header">
+      <div class="entry-left"><div class="entry-company">{{ project.title }}</div></div>
+      <div class="entry-right"><div class="entry-dates">{{ project.dates }}</div></div>
+    </div>
+    <ul class="bullets">
+      {% for bullet in project.bullets %}<li>{{ bullet }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if skills %}
+<div class="section">
+  <h2 class="section-title">SKILLS</h2>
+  <div class="skills-block">
+    {% for skill in skills %}
+    <p><strong>{{ skill.label }}:</strong> {{ skill.content }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if interests %}
+<div class="section">
+  <h2 class="section-title">INTERESTS</h2>
+  <ul class="bullets">
+    {% for item in interests %}<li>{{ item }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+</body>
+</html>
